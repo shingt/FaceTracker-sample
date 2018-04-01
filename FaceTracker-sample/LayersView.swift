@@ -6,7 +6,7 @@ struct FaceLayer {
 }
 
 final class LayersView: UIView {
-    private let layerColor = UIColor(colorLiteralRed: 0.78, green: 0.13, blue: 0.16, alpha: 0.5)
+    private let layerColor = UIColor(red: 0.78, green: 0.13, blue: 0.16, alpha: 0.5)
     private var drawnFaceLayers = [FaceLayer]()
    
     override init(frame: CGRect) {

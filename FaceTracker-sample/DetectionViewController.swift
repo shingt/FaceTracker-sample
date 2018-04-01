@@ -21,12 +21,12 @@ final class DetectionViewController: UIViewController {
     }()
      
     private lazy var device: AVCaptureDevice? = {
-        let device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .back)
+        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
         return device
     }()
     private lazy var deviceInput: AVCaptureDeviceInput? = {
         do {
-            return try AVCaptureDeviceInput(device: self.device)
+            return try AVCaptureDeviceInput(device: self.device!)
         } catch {
             print("Failed to initialize AVCaptureDeviceInput." ); return nil
         }
@@ -44,9 +44,9 @@ final class DetectionViewController: UIViewController {
         return session
     }()    
     private lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer? = {
-        let layer = AVCaptureVideoPreviewLayer(session: self.session)
-        layer?.frame = self.view.bounds
-        layer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+        let layer = AVCaptureVideoPreviewLayer(session: self.session!)
+        layer.frame = self.view.bounds
+        layer.videoGravity = .resizeAspectFill
         return layer
     }()
     
@@ -57,11 +57,11 @@ final class DetectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        switch AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setup()
         case .notDetermined:
-            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { [weak self] granted in
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: { [weak self] granted in
                 guard let strongSelf = self else { return }
                 guard granted else { print("You need to authorize camera access in this app."); return }
                 
@@ -83,10 +83,10 @@ final class DetectionViewController: UIViewController {
 }
 
 extension DetectionViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didDrop sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+    func captureOutput(_ captureOutput: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
     }
     
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+    func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let cvImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         let ciImage = CIImage(cvPixelBuffer: cvImageBuffer)
         let cvImageHeight = CGFloat(CVPixelBufferGetHeight(cvImageBuffer))
