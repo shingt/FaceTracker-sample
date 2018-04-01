@@ -21,7 +21,7 @@ final class DetectionViewController: UIViewController {
     }()
      
     private lazy var device: AVCaptureDevice? = {
-        let device = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
         return device
     }()
     private lazy var deviceInput: AVCaptureDeviceInput? = {
@@ -46,7 +46,7 @@ final class DetectionViewController: UIViewController {
     private lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer? = {
         let layer = AVCaptureVideoPreviewLayer(session: self.session!)
         layer.frame = self.view.bounds
-        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        layer.videoGravity = .resizeAspectFill
         return layer
     }()
     
@@ -57,11 +57,11 @@ final class DetectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setup()
         case .notDetermined:
-            AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler: { [weak self] granted in
+            AVCaptureDevice.requestAccess(for: .video, completionHandler: { [weak self] granted in
                 guard let strongSelf = self else { return }
                 guard granted else { print("You need to authorize camera access in this app."); return }
                 
